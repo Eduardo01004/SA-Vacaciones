@@ -1,166 +1,17 @@
-import { useState,useEffect} from 'react';
-import { Pagination } from 'antd';
-import { Card,Button,Row, Col,Badge,Modal,List, Checkbox,message,Form, Input,InputNumber} from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import { useRef } from 'react';
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
+import Pokemons from './pages/pokemons';
+import Soap from './pages/soap';
 
-
-function PaginationButtons({ currentPage, totalPages, handlePrevious, handleNext }) {
+function App() {
   return (
-    <Row justify="center" style={{ marginTop: '16px' }}>
-      <Col>
-        <Button type="primary" onClick={handlePrevious} disabled={currentPage === 1}>
-          Atrás
-        </Button>
-      </Col>
-      <Col>
-        <span style={{ margin: '0 8px' }}>Página {currentPage} de {totalPages}</span>
-      </Col>
-      <Col>
-        <Button type="primary" onClick={handleNext} disabled={currentPage === totalPages}>
-          Adelante
-        </Button>
-      </Col>
-    </Row>
+    <Router>
+      <Routes>
+        <Route  path="/" element={ <Pokemons/> } />
+        <Route  path="/about" element={ <Soap/> } />
+      </Routes>
+    </Router>
   );
 }
 
-
-
-function App() {
-  const { Meta } = Card;
-  const messageRef = useRef(null);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
-  const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setlimit] = useState(10);
-  const [off, setoff] = useState(0);
-  const totalPages = 10; // Total de páginas disponibles
-
-  const handlePrevious = () => {
-    setCurrentPage(prevPage => prevPage - 1);
-    setlimit( limit - 10);
-    setoff(off - 10)
-    console.log(limit)
-    try {
-      axios.post('http://localhost:3000/APIREST',
-      {
-      "limit":limit,
-      "offset":off
-    }). then(response => {
-      //console.log(response.data)
-      setData(response.data)
-    
-    })
-
-    } catch (error) {
-      console.error(error);
-    }
-    
-  };
-
-  const handleNext = () => {
-    setCurrentPage(prevPage => prevPage + 1);
-    setlimit( limit + 10);
-    console.log(limit)
-    setoff(off + 10)
-    try {
-      axios.post('http://localhost:3000/APIREST',
-      {
-      "limit":limit,
-      "offset":off
-    }). then(response => {
-      //console.log(response.data)
-      setData(response.data)
-    
-    })
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
-  useEffect(() => {
-    async function getData() {
-      
-      try {
-        axios.post('http://localhost:3000/APIREST',
-        {
-        "limit":limit,
-        "offset":off
-      }). then(response => {
-        //console.log(response.data)
-        setData(response.data)
-       
-       
-
-      })
-
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    getData();
-  }, []);
-
-
-
-  
-
-
-
-  return (
-    <div className="site-layout-content" style={{ background: colorBgContainer }}>
-      <Row gutter={[5,5]}> 
-      {
-            data.map((item) => (
-              <Col key={item.name} span={8}> 
-            <Card   
-                    
-                    style={{ width: 300 }}
-                    cover={
-                    <img
-                        alt="example"
-                        src={item.imagenUrl}
-                    />
-                    }
-                actions={[
-                    
-                    ]}
-                >
-                <Meta
-                    
-                    title={item.nombre}
-                    description="Pokemon"
-                />
-            </Card>
-            </Col>
-
-
-            ))
-            
-    }
-
-
-      </Row>
-
-
-      <PaginationButtons
-        currentPage={currentPage}
-        totalPages={totalPages}
-        handlePrevious={handlePrevious}
-        handleNext={handleNext}
-      />
-    
-
-    </div>
-    
-  )
-}
-
-export default App
+export default App;
