@@ -1,0 +1,16 @@
+version: "3" # Se indica el numero de version
+services:
+  backend:
+    container_name: backend
+    restart: always
+    build: ./Backend # Se utiliza para construir una imagen, la ruta que se especifica es la ubicacion del Dockerfile para la imagen.  
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+
+  mysql:
+    build: ./DB/
+    restart: always
+    ports:
+      - "3306:3306"
